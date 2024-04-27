@@ -1,0 +1,7 @@
+initramfs
+initramfs.gz
+linux-6.7.4
+linux-6.7.4/*
+busybox-1.36.1/*
+vroot/*
+boot/*

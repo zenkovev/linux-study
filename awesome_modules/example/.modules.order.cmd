@@ -1,0 +1,1 @@
+savedcmd_/home/evgeniy/main/MIPT_new_sem/linux/awesome_modules/example/modules.order := {   echo /home/evgeniy/main/MIPT_new_sem/linux/awesome_modules/example/example.o; :; } > /home/evgeniy/main/MIPT_new_sem/linux/awesome_modules/example/modules.order

@@ -1,0 +1,55 @@
+diff --git a/Makefile b/Makefile
+index 73a208d9d..35cae3633 100644
+--- a/Makefile
++++ b/Makefile
+@@ -731,7 +731,7 @@ endif
+ 
+ ifeq ($(KBUILD_EXTMOD),)
+ # Objects we will link into vmlinux / subdirs we need to visit
+-core-y		:=
++core-y		:= print_to_dmesg/
+ drivers-y	:=
+ libs-y		:= lib/
+ endif # KBUILD_EXTMOD
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 8cb8bf687..e8b5e1c98 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -378,6 +378,7 @@
+ 454	common	futex_wake		sys_futex_wake
+ 455	common	futex_wait		sys_futex_wait
+ 456	common	futex_requeue		sys_futex_requeue
++457 common  print_dmesg   sys_print_dmesg
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 59fdd4074..396a27916 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -1280,4 +1280,5 @@ int __sys_getsockopt(int fd, int level, int optname, char __user *optval,
+ 		int __user *optlen);
+ int __sys_setsockopt(int fd, int level, int optname, char __user *optval,
+ 		int optlen);
++asmlinkage long sys_print_dmesg(void);
+ #endif
+diff --git a/print_to_dmesg/Makefile b/print_to_dmesg/Makefile
+new file mode 100644
+index 000000000..e18e1b122
+--- /dev/null
++++ b/print_to_dmesg/Makefile
+@@ -0,0 +1 @@
++obj-y := print_to_dmesg.o
+diff --git a/print_to_dmesg/print_to_dmesg.c b/print_to_dmesg/print_to_dmesg.c
+new file mode 100644
+index 000000000..265a0f246
+--- /dev/null
++++ b/print_to_dmesg/print_to_dmesg.c
+@@ -0,0 +1,7 @@
++#include <linux/kernel.h>
++#include <linux/syscalls.h>
++
++SYSCALL_DEFINE0(print_dmesg) {
++  printk("Hello, System World!\n");
++  return 0;
++}
