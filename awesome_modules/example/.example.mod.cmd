@@ -1,1 +1,0 @@
-savedcmd_/home/evgeniy/main/MIPT_new_sem/linux/awesome_modules/example/example.mod := printf '%s\n'   example.o | awk '!x[$$0]++ { print("/home/evgeniy/main/MIPT_new_sem/linux/awesome_modules/example/"$$0) }' > /home/evgeniy/main/MIPT_new_sem/linux/awesome_modules/example/example.mod

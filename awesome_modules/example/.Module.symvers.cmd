@@ -1,1 +1,0 @@
-savedcmd_/home/evgeniy/main/MIPT_new_sem/linux/awesome_modules/example/Module.symvers :=  scripts/mod/modpost -M        -o /home/evgeniy/main/MIPT_new_sem/linux/awesome_modules/example/Module.symvers -T /home/evgeniy/main/MIPT_new_sem/linux/awesome_modules/example/modules.order -i Module.symvers -e 
