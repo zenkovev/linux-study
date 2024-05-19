@@ -6,6 +6,7 @@
 #include <linux/uaccess.h>
 #include <linux/mm.h>
 #include <linux/mm_types.h>
+#include <asm/io.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("zenkov_ev");
@@ -33,12 +34,29 @@ static void listvma_handler(void) {
   }
 }
 
-static void findpage_handler(unsigned long long int addr) {
-  printk(KERN_INFO "> Command: [findpage] [%llu]\n", addr);
+static void findpage_handler(unsigned long int addr_src) {
+  void* addr = (void*)addr_src;
+  unsigned long long int phys = virt_to_phys(addr);
+
+  printk(KERN_INFO "Virtual address to physical address:\n");
+  printk(KERN_INFO "- VA 0x%lx -> PA 0x%llx\n", addr_src, phys);
 }
 
-static void writeval_handler(unsigned long long int addr, unsigned long int val) {
-  printk(KERN_INFO "> Command: [writeval] [%llu] [%lu]\n", addr, val);
+static void writeval_handler(unsigned long int addr_src, unsigned long int val) {
+  void* addr = (void*)addr_src;
+  unsigned long int* addr_type = (unsigned long int*)addr;
+
+  int err = access_ok(addr, sizeof(unsigned long int));
+  if (err != 0) {
+    err = put_user(val, addr_type);
+    if (err == 0) {
+      printk(KERN_INFO "Successfully write value %lu at address 0x%lx\n", val, addr_src);
+      return;
+    }
+  }
+
+  printk(KERN_INFO "Failed to write value %lu at address 0x%lx\n", val, addr_src);
+  return;
 }
 
 // ----- Process file functions -----
@@ -55,13 +73,13 @@ static ssize_t procfile_write(struct file *flip, const char __user *buffer, size
   }
   *(data + buffer_size) = '\0';
 
-  unsigned long long int address;
+  unsigned long int address;
   unsigned long int value;
   if (strncmp(data, "listvma", strlen("listvma")) == 0) {
     listvma_handler();
-  } else if (sscanf(data, "findpage %llu", &address) == 1) {
+  } else if (sscanf(data, "findpage %lx", &address) == 1) {
     findpage_handler(address);
-  } else if (sscanf(data, "writeval %llu %lu", &address, &value) == 2) {
+  } else if (sscanf(data, "writeval %lx %lu", &address, &value) == 2) {
     writeval_handler(address, value);
   } else {
     return -EINVAL;
